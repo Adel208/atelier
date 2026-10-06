@@ -3,6 +3,20 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
+
+const TIMELINE = [
+  ["01", "ACCUEIL", "Un fauteuil, un thé, le temps de se poser."],
+  ["02", "ÉCHANGE", "Vos envies, votre quotidien, votre texture."],
+  ["03", "GESTE", "La coupe se dessine, sans précipitation."],
+  ["04", "FINITION", "Le détail qui signe l’ensemble."],
+];
+
+const MARQUEE_WORDS = ["MOUVEMENT", "TEXTURE", "LIGNE", "LUMIÈRE"];
+
+function Words({ text }: { text: string }) {
+  return <>{text.split(" ").map((word, index) => <span key={index}><span className="word">{word}</span>{" "}</span>)}</>;
+}
 
 const navigation = [
   ["LE SALON", "#manifeste"],
@@ -27,6 +41,17 @@ export default function Home() {
     if (!hero) return;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const compact = window.matchMedia("(max-width: 700px)").matches;
+
+    // Défilement fluide : ordinateur uniquement, jamais en mouvement réduit ni sur téléphone.
+    let lenis: Lenis | null = null;
+    let tick: ((time: number) => void) | null = null;
+    if (!reducedMotion && !compact) {
+      lenis = new Lenis({ lerp: 0.1, anchors: { offset: -82 } });
+      lenis.on("scroll", ScrollTrigger.update);
+      tick = (time: number) => lenis?.raf(time * 1000);
+      gsap.ticker.add(tick);
+      gsap.ticker.lagSmoothing(0);
+    }
 
     const context = gsap.context(() => {
       const scenes = gsap.utils.toArray<HTMLElement>(".hero-scene");
@@ -59,6 +84,8 @@ export default function Home() {
             scrub: 0.25,
             onUpdate: (self) => {
               if (progressRef.current) progressRef.current.style.transform = `scaleX(${self.progress})`;
+              // L’ivoire atteint la barre de navigation : le menu passe en encre.
+              setLightHeader(self.progress > 0.88);
             },
           },
         });
@@ -86,7 +113,72 @@ export default function Home() {
           // Hold Personality, then let the sticky stage leave with the normal page flow.
           .to(".sculpture-edge", { opacity: 0.55, duration: 0.45, ease: "sine.out" }, 0.8);
 
+        // « La coupe » : un trait bronze traverse l’écran, le noir se fend le long du trait
+        // et l’ivoire du manifeste apparaît par l’ouverture qui s’agrandit.
+        gsap.set(".hero-wipe", { autoAlpha: 1 });
+        gsap.set(".cut-line", { autoAlpha: 0, scaleX: 0 });
+        gsap.set(".cut-edge", { autoAlpha: 0, top: "50%" });
+        timeline
+          .to(".cut-line", { autoAlpha: 1, scaleX: 1, duration: 0.06, ease: "power3.inOut" }, 0.93)
+          .to(".sculpture", { opacity: 0.35, duration: 0.07, ease: "none" }, 0.93)
+          .set(".cut-line", { autoAlpha: 0 }, 0.995)
+          .set(".cut-edge", { autoAlpha: 1 }, 0.995)
+          .fromTo(".hero-wipe", { clipPath: "inset(50% 0% 50% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.19, ease: "power2.inOut" }, 1)
+          .to(".hero-wipe", { "--grain": 0, duration: 0.12, ease: "none" }, 1.13)
+          .to(".cut-edge--top", { top: "0%", duration: 0.19, ease: "power2.inOut" }, 1)
+          .to(".cut-edge--bottom", { top: "100%", duration: 0.19, ease: "power2.inOut" }, 1)
+          .to(".cut-edge", { autoAlpha: 0, duration: 0.03, ease: "none" }, 1.16);
 
+        // « Un temps pour vous » : texte mot par mot, cadre qui s’ouvre, ligne du temps.
+        gsap.fromTo(".salon-lede .word", { opacity: 0.14 }, {
+          opacity: 1, stagger: 0.12, ease: "none",
+          scrollTrigger: { trigger: ".salon-lede", start: "top 82%", end: "bottom 48%", scrub: true },
+        });
+        gsap.fromTo(".salon-frame", { clipPath: "inset(15% 17% 15% 17%)" }, {
+          clipPath: "inset(0% 0% 0% 0%)", ease: "power2.out",
+          scrollTrigger: { trigger: ".salon-photo", start: "top 88%", end: "top 18%", scrub: 0.5 },
+        });
+        gsap.fromTo(".salon-frame img", { scale: 1.32, yPercent: -5 }, {
+          scale: 1, yPercent: 5, ease: "none",
+          scrollTrigger: { trigger: ".salon-photo", start: "top bottom", end: "bottom top", scrub: true },
+        });
+        gsap.fromTo(".salon-photo figcaption", { autoAlpha: 0, y: 10 }, {
+          autoAlpha: 1, y: 0, ease: "power2.out",
+          scrollTrigger: { trigger: ".salon-photo", start: "top 40%", end: "top 15%", scrub: true },
+        });
+        const timelineItems = gsap.utils.toArray<HTMLElement>(".timeline__step");
+        gsap.fromTo(".timeline__fill", compact ? { scaleY: 0 } : { scaleX: 0 }, {
+          ...(compact ? { scaleY: 1 } : { scaleX: 1 }), ease: "none",
+          scrollTrigger: {
+            trigger: ".timeline", start: compact ? "top 70%" : "top 82%", end: compact ? "bottom 60%" : "bottom 58%", scrub: 0.4,
+            onUpdate: (self) => timelineItems.forEach((item, index) => item.classList.toggle("is-on", self.progress > index / timelineItems.length)),
+          },
+        });
+
+        // « Matière » : titre contour qui se remplit, cadres à vitesses différentes, bande qui défile.
+        gsap.fromTo(".outline-letter", { color: "rgba(7,7,6,0)" }, {
+          color: "rgba(7,7,6,1)", stagger: 0.14, ease: "none",
+          scrollTrigger: { trigger: ".gallery-heading", start: "top 80%", end: "bottom 38%", scrub: true },
+        });
+        const depth = compact ? 0.4 : 1;
+        [[".gallery-large", 46, -46], [".gallery-tall", 120, -90], [".gallery-wide", -70, 60]].forEach(([selector, from, to]) => {
+          gsap.fromTo(selector as string, { y: (from as number) * depth }, {
+            y: (to as number) * depth, ease: "none",
+            scrollTrigger: { trigger: ".gallery-grid", start: "top bottom", end: "bottom top", scrub: 0.7 },
+          });
+          gsap.fromTo(`${selector} .gallery-frame`, { clipPath: "inset(14% 16% 14% 16%)" }, {
+            clipPath: "inset(0% 0% 0% 0%)", ease: "power2.out",
+            scrollTrigger: { trigger: selector as string, start: "top 90%", end: "top 40%", scrub: 0.5 },
+          });
+          gsap.fromTo(`${selector} img`, { scale: 1.3 }, {
+            scale: 1.04, ease: "none",
+            scrollTrigger: { trigger: selector as string, start: "top 90%", end: "bottom 30%", scrub: true },
+          });
+        });
+        gsap.fromTo(".marquee-track", { xPercent: 4 }, {
+          xPercent: -26, ease: "none",
+          scrollTrigger: { trigger: ".gallery-marquee", start: "top bottom", end: "bottom top", scrub: 0.6 },
+        });
 
         gsap.utils.toArray<HTMLElement>(".reveal-line").forEach((element, index) => {
           gsap.fromTo(element, { clipPath: "inset(0 0 100% 0)", y: 12 }, {
@@ -98,13 +190,6 @@ export default function Home() {
         gsap.fromTo(".expertise-rule__fill", { scaleX: 0 }, {
           scaleX: 1, transformOrigin: "left center", ease: "none",
           scrollTrigger: { trigger: "#expertise", start: "top 70%", end: "bottom 60%", scrub: true },
-        });
-        gsap.utils.toArray<HTMLElement>(".gallery-image").forEach((image, index) => {
-          gsap.fromTo(image, { clipPath: index === 1 ? "inset(0 0 0 100%)" : "inset(100% 0 0 0)" }, {
-            clipPath: "inset(0 0 0 0)", ease: "power2.out",
-            scrollTrigger: { trigger: image, start: "top 85%", end: "top 45%", scrub: 0.45 },
-          });
-          gsap.to(image, { yPercent: -4, ease: "none", scrollTrigger: { trigger: image, start: "top bottom", end: "bottom top", scrub: true } });
         });
         gsap.fromTo(".signature-second", { clipPath: "inset(100% 0 0 0)", y: 22 }, {
           clipPath: "inset(0 0 0 0)", y: 0, ease: "power2.out",
@@ -133,6 +218,9 @@ export default function Home() {
     return () => {
       window.removeEventListener("scroll", scrollHandler);
       context.revert();
+      if (tick) gsap.ticker.remove(tick);
+      lenis?.destroy();
+      gsap.ticker.lagSmoothing(500, 33);
     };
   }, []);
 
@@ -212,6 +300,10 @@ export default function Home() {
 
           </div>
           <div className="hero-progress" aria-hidden="true"><span ref={progressRef} /></div>
+          <div className="hero-wipe" aria-hidden="true" />
+          <div className="cut-line" aria-hidden="true" />
+          <div className="cut-edge cut-edge--top" aria-hidden="true" />
+          <div className="cut-edge cut-edge--bottom" aria-hidden="true" />
         </div>
       </section>
 
@@ -252,8 +344,12 @@ export default function Home() {
 
       <section id="le-temps" className="salon-section tone-light">
         <div className="section-topline"><span>LA MAISON / L’EXPÉRIENCE</span><span>PRENDRE LE TEMPS</span></div>
-        <div className="salon-heading"><h2><span className="reveal-line">UN TEMPS</span><span className="reveal-line">POUR VOUS.</span></h2><p>Un échange, un regard, une intention. Chaque rendez-vous commence par comprendre votre quotidien, vos envies et votre façon de porter vos cheveux.</p></div>
-        <figure className="salon-photo"><img className="gallery-image" src="/salon-editorial.png" alt="Ambiance imaginée du salon : fauteuils noirs, bois sombre et lumière naturelle" loading="lazy" /><figcaption><span>01 / UN LIEU POUR SOUFFLER</span><span>ÉCOUTER. OBSERVER. CRÉER.</span></figcaption></figure>
+        <div className="salon-heading"><h2><span className="reveal-line">UN TEMPS</span><span className="reveal-line">POUR VOUS.</span></h2><p className="salon-lede"><Words text="Un échange, un regard, une intention. Chaque rendez-vous commence par comprendre votre quotidien, vos envies et votre façon de porter vos cheveux." /></p></div>
+        <figure className="salon-photo"><div className="salon-frame"><img src="/salon-editorial.png" alt="Ambiance imaginée du salon : fauteuils noirs, bois sombre et lumière naturelle" loading="lazy" /></div><figcaption><span>01 / UN LIEU POUR SOUFFLER</span><span>ÉCOUTER. OBSERVER. CRÉER.</span></figcaption></figure>
+        <ol className="timeline" aria-label="Le déroulé d’un rendez-vous">
+          <li className="timeline__rail" aria-hidden="true"><span className="timeline__fill" /></li>
+          {TIMELINE.map(([number, label, text]) => <li className="timeline__step" key={number}><i className="timeline__dot" aria-hidden="true" /><span className="timeline__number">{number}</span><h3>{label}</h3><p>{text}</p></li>)}
+        </ol>
         <div className="salon-after"><span>LE LUXE DE L’ATTENTION</span><p>Une envie précise ou une idée encore floue.<br />Tout commence par une conversation.</p><a href="#rendez-vous" className="dark-link">PRENDRE RENDEZ-VOUS ↗</a></div>
       </section>
 
@@ -270,12 +366,12 @@ export default function Home() {
 
       <section id="galerie" className="gallery-section tone-light">
         <div className="section-topline"><span>03 / INSPIRATION</span><span>FORMES EN MOUVEMENT</span></div>
-        <div className="gallery-heading"><h2 className="reveal-line">MATIÈRE<span className="period">.</span></h2><p>La beauté d’un mouvement libre.</p></div>
+        <div className="gallery-heading"><h2 aria-label="Matière."><span className="outline-word" aria-hidden="true">{"MATIÈRE".split("").map((letter, index) => <span key={index} className="outline-letter">{letter}</span>)}</span><span className="period" aria-hidden="true">.</span></h2><p>La beauté d’un mouvement libre.</p></div>
         <div className="gallery-grid">
-          <figure className="gallery-figure gallery-large"><img className="gallery-image" src="/texture-editorial.png" alt="Boucles châtain et texture naturelle dans une lumière chaude" loading="lazy" /><figcaption><span>01 / TEXTURE</span><span>RÉVÉLER LA TEXTURE</span></figcaption></figure>
-          <figure className="gallery-figure gallery-tall"><img className="gallery-image" src="/homme-editorial.webp" alt="Silhouette éditoriale et coupe masculine texturée" /><figcaption><span>02 / FORME</span><span>DESSINER LA LIGNE</span></figcaption></figure>
-          <div className="gallery-word">MOUVEMENT<span>—</span></div>
-          <figure className="gallery-figure gallery-wide"><img className="gallery-image" src="/femme-editorial.webp" alt="Détail de coiffure sculpté dans la lumière" /><figcaption><span>03 / LUMIÈRE</span><span>NUANCER LA LUMIÈRE</span></figcaption></figure>
+          <figure className="gallery-figure gallery-large"><div className="gallery-frame"><div className="gallery-media"><img src="/texture-editorial.png" alt="Boucles châtain et texture naturelle dans une lumière chaude" loading="lazy" /></div><figcaption><span>01 / TEXTURE</span><span>RÉVÉLER LA TEXTURE</span></figcaption></div></figure>
+          <figure className="gallery-figure gallery-tall"><div className="gallery-frame"><div className="gallery-media"><img src="/homme-editorial.webp" alt="Silhouette éditoriale et coupe masculine texturée" /></div><figcaption><span>02 / FORME</span><span>DESSINER LA LIGNE</span></figcaption></div></figure>
+          <div className="gallery-marquee" aria-hidden="true"><div className="marquee-track">{[0, 1].map((copy) => <span className="marquee-set" key={copy}>{MARQUEE_WORDS.map((word) => <span className="marquee-word" key={word}>{word}<i>—</i></span>)}</span>)}</div></div>
+          <figure className="gallery-figure gallery-wide"><div className="gallery-frame"><div className="gallery-media"><img src="/femme-editorial.webp" alt="Détail de coiffure sculpté dans la lumière" /></div><figcaption><span>03 / LUMIÈRE</span><span>NUANCER LA LUMIÈRE</span></figcaption></div></figure>
         </div>
         <div className="material-notes"><article><span>01 / TEXTURE</span><h3>Révéler la texture</h3><p>Composer avec le mouvement naturel du cheveu, lui donner de l’espace et laisser vivre sa singularité.</p></article><article><span>02 / LIGNE</span><h3>Dessiner la ligne</h3><p>Trouver l’équilibre entre structure et liberté. Une forme précise, qui accompagne votre allure.</p></article><article><span>03 / NUANCE</span><h3>Nuancer la lumière</h3><p>Créer de la profondeur, sans figer la couleur. Des reflets qui se découvrent au fil du mouvement.</p></article></div>
       </section>
@@ -311,10 +407,10 @@ function CustomCursor() {
     const move = (event: MouseEvent) => gsap.to(cursor, { x: event.clientX, y: event.clientY, xPercent: -50, yPercent: -50, duration: 0.22, ease: "power2.out", overwrite: true });
     const over = (event: Event) => {
       const target = event.target as HTMLElement | null;
-      const label = target?.closest(".duo-panel, .gallery-figure") ? "VIEW" : target?.closest(".booking-cta, .header-book, .text-link") ? "BOOK" : "";
+      const label = target?.closest(".duo-panel, .gallery-figure") ? "VOIR" : target?.closest(".booking-cta, .header-book, .text-link") ? "BOOK" : "";
       const interactive = target?.closest("a, button, .duo-panel, .gallery-figure");
       cursor.dataset.label = label;
-      cursor.classList.toggle("cursor--active", Boolean(interactive));
+      cursor.classList.toggle("custom-cursor--active", Boolean(interactive));
     };
     window.addEventListener("mousemove", move, { passive: true });
     document.addEventListener("mouseover", over);
