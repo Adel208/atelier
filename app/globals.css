@@ -184,3 +184,32 @@ button{font:inherit}
 
 @media(prefers-reduced-motion:reduce){.outline-letter{color:var(--ink)}.gallery-frame,.salon-frame{clip-path:none}.timeline__step{opacity:1}.timeline__fill{transform:none}.timeline__dot{background:var(--bronze);border-color:var(--bronze)}.salon-lede .word{opacity:1}}
 @media(max-width:700px){.mirror-frame{top:57vh;bottom:6vh;right:8vw;width:50vw}.hero-scene{padding:calc(var(--header-height) + 24px) 7vw 41vh}.scene-two,.scene-three,.scene-four{padding-left:7vw}.hero-scene h1{font-size:clamp(64px,19vw,90px)}}
+
+/* ===== Responsive : tablette et téléphone ===== */
+@media(max-width:1000px){
+  .nav a,.header-book{font-size:9px}
+  .duo-section{height:min(860px,92svh);min-height:700px}
+  .duo-shade{background:linear-gradient(0deg,rgba(7,7,6,.9) 0%,rgba(7,7,6,.5) 34%,transparent 60%)}
+  .duo-panel img{object-position:center 16%}
+  .site-footer{min-height:0;padding-bottom:0}
+  .footer-ghost{position:static;display:block;text-align:center;white-space:nowrap;font-size:24vw;line-height:.8;letter-spacing:-.06em;color:rgba(238,231,222,.05);margin:36px 0 0;padding-bottom:14px}
+}
+@media(max-width:700px){
+  /* Lisibilité : plus aucun libellé sous 9 px */
+  .text-link,.scroll-cue,.hero-index,.manifesto-meta,.dark-link,.section-topline,.duo-caption,.duo-content .eyebrow,.duo-link,.step-number,.signature-label,.booking-aside,.footer-mantra,.footer-up,.footer-label,.footer-bottom,.salon-photo figcaption{font-size:10px;letter-spacing:.12em}
+  .gallery-figure figcaption{font-size:9px;flex-direction:column;gap:3px;padding:10px 12px}
+  .section-topline,.manifesto-meta,.duo-caption{flex-wrap:wrap;gap:4px 16px}
+  .footer-grid p,.footer-grid p a{font-size:18px}
+  .footer-grid a,.footer-grid>div>span:not(.footer-label){font-size:10px}
+  /* Femme / Homme : deux grands panneaux, visages dégagés, texte en bas */
+  .duo-section{display:grid;gap:6px;height:auto;min-height:0;padding:0;background:var(--ink)}
+  .duo-panel{height:min(88svh,740px);min-height:540px}
+  .duo-panel img{object-position:center 14%}
+  .duo-caption{top:calc(var(--header-height) + 10px)}
+  .duo-content{left:24px;right:24px;bottom:34px}
+  .duo-content h2{font-size:clamp(62px,19vw,84px);margin:10px 0 12px}
+  .duo-content ul{font-size:12px;margin-bottom:22px}
+  .site-footer{padding:36px 24px 0}
+  .footer-ghost{font-size:25vw;margin:30px -24px 0}
+}
+

@@ -188,6 +188,24 @@ export default function Home() {
           scrollTrigger: { trigger: ".gallery-marquee", start: "top bottom", end: "bottom top", scrub: 0.6 },
         });
 
+        // « Femme / Homme » sur téléphone et tablette : pas de survol, donc une entrée animée au défilement.
+        if (window.matchMedia("(hover: none), (max-width: 1000px)").matches) {
+          gsap.utils.toArray<HTMLElement>(".duo-panel").forEach((panel, index) => {
+            gsap.fromTo(panel, { clipPath: compact ? "inset(9% 6% 9% 6%)" : `inset(10% ${index ? "0%" : "0%"} 0% 0%)` }, {
+              clipPath: "inset(0% 0% 0% 0%)", ease: "power2.out",
+              scrollTrigger: { trigger: panel, start: "top 92%", end: "top 30%", scrub: 0.5 },
+            });
+            gsap.fromTo(panel.querySelector("img"), { scale: 1.25, yPercent: -4 }, {
+              scale: 1, yPercent: 4, ease: "none",
+              scrollTrigger: { trigger: panel, start: "top bottom", end: "bottom top", scrub: true },
+            });
+            gsap.fromTo(panel.querySelectorAll(".duo-content > *"), { autoAlpha: 0, y: 26 }, {
+              autoAlpha: 1, y: 0, stagger: 0.1, ease: "power2.out",
+              scrollTrigger: { trigger: panel, start: compact ? "top 45%" : "top 60%", end: compact ? "top 5%" : "top 20%", scrub: 0.6 },
+            });
+          });
+        }
+
         gsap.utils.toArray<HTMLElement>(".reveal-line").forEach((element, index) => {
           gsap.fromTo(element, { clipPath: "inset(0 0 100% 0)", y: 12 }, {
             clipPath: "inset(0 0 0% 0)", y: 0, duration: 0.9, ease: "power3.out",
