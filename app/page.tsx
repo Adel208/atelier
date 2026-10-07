@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
+import { ScrollChoreography } from "@/components/ui/scroll-choreography";
 
 const TIMELINE = [
   ["01", "ACCUEIL", "Un fauteuil, un thé, le temps de se poser."],
@@ -11,6 +12,19 @@ const TIMELINE = [
   ["03", "GESTE", "La coupe se dessine, sans précipitation."],
   ["04", "FINITION", "Le détail qui signe l’ensemble."],
 ];
+
+const CHOREOGRAPHY_IMAGES = {
+  topLeft: "/choreo-1-texture.webp",
+  bottomRight: "/choreo-2-geste.webp",
+  bottomLeft: "/choreo-3-profil.webp",
+  topRight: "/choreo-4-miroir.webp",
+};
+const CHOREOGRAPHY_ALTS = {
+  topLeft: "Gros plan sur des boucles châtain dans une lumière dorée",
+  bottomRight: "Les mains d’un coiffeur coupant une mèche avec des ciseaux et un peigne",
+  bottomLeft: "Profil d’une femme à la coupe courte structurée, pull noir à col roulé",
+  topRight: "Une cliente à la coupe courte se regarde dans le miroir du salon, lumière dorée de fin de journée",
+};
 
 const MARQUEE_WORDS = ["MOUVEMENT", "TEXTURE", "LIGNE", "LUMIÈRE"];
 
@@ -72,9 +86,9 @@ export default function Home() {
         gsap.set(line, { autoAlpha: 0, scaleX: 0, transformOrigin: "0% 50%" });
         gsap.set(halo, { autoAlpha: 0, yPercent: 25, scale: 0.8 });
         gsap.set(slit, { autoAlpha: 0, scaleY: 0, transformOrigin: "50% 100%" });
-        gsap.set(".sculpture", { xPercent: compact ? 23 : 29, rotation: 24 });
-        gsap.set(".sculpture-blade--a", { rotation: -12, svgOrigin: "300 610" });
-        gsap.set(".sculpture-blade--b", { rotation: 12, svgOrigin: "300 610" });
+        // « Le miroir » : un reflet embué dans un cadre en arche, qui se dégage puis s'ouvre sur toute la pièce.
+        gsap.set(".mirror-photo", { filter: "blur(14px) brightness(0.38) saturate(0.8)", scale: 1.2 });
+        gsap.set(".mirror-sheen", { xPercent: -160 });
 
         const timeline = gsap.timeline({
           scrollTrigger: {
@@ -90,14 +104,11 @@ export default function Home() {
           },
         });
         timeline
-          .to(".sculpture", { xPercent: compact ? -24 : -28, rotation: -30, scale: 0.9, duration: 0.22, ease: "sine.inOut" }, 0.1)
-          .to(".sculpture-blade--a", { rotation: -26, duration: 0.22, ease: "sine.inOut" }, 0.1)
-          .to(".sculpture-blade--b", { rotation: 26, duration: 0.22, ease: "sine.inOut" }, 0.1)
-          .to(".sculpture-reflection", { yPercent: 130, duration: 0.32, ease: "none" }, 0.05)
-          .to(".sculpture", { xPercent: compact ? 23 : 29, rotation: 15, scale: 1.06, duration: 0.2, ease: "sine.inOut" }, 0.36)
-          .to(".sculpture-blade--a", { rotation: -7, duration: 0.2 }, 0.36)
-          .to(".sculpture-blade--b", { rotation: 7, duration: 0.2 }, 0.36)
-          .to(".sculpture", { xPercent: compact ? 25 : -27, rotation: -8, scale: 1.14, duration: 0.16, ease: "sine.inOut" }, 0.65)
+          .to(".mirror-photo", { filter: "blur(0px) brightness(1) saturate(1)", duration: 0.36, ease: "power1.out" }, 0.04)
+          .to(".mirror-photo", { scale: 1, duration: 0.9, ease: "none" }, 0.02)
+          .to(".mirror-sheen", { xPercent: 260, duration: 0.4, ease: "none" }, 0.04)
+          .to(".mirror-frame", { top: 0, bottom: 0, right: 0, width: "100vw", borderRadius: "0px 0px 0px 0px", boxShadow: "0 0 0 0px rgba(176,130,84,0), 0 0 0 0px rgba(7,7,6,0), 0 0 0 0px rgba(176,130,84,0), 0 0 0px rgba(166,123,80,0)", duration: 0.46, ease: "power2.inOut" }, 0.5)
+          .to(".mirror-photo", { objectPosition: "50% 45%", duration: 0.46, ease: "power2.inOut" }, 0.5)
           .to(line, { autoAlpha: 0.48, scaleX: 1, duration: 0.055, ease: "power2.out" }, 0.19)
           .to(scenes[0], { autoAlpha: 0, clipPath: "inset(0 0 100% 0)", duration: 0.07, ease: "power2.inOut" }, 0.2)
           .fromTo(scenes[1], { autoAlpha: 0, clipPath: "inset(0 100% 0 0)" }, { autoAlpha: 1, clipPath: "inset(0 0% 0 0)", duration: 0.07, ease: "power2.out" }, 0.22)
@@ -109,9 +120,7 @@ export default function Home() {
           .to(scenes[2], { autoAlpha: 0, clipPath: "inset(100% 0 0 0)", duration: 0.07, ease: "power2.inOut" }, 0.685)
           .to(".hero-vignette", { opacity: 0.92, duration: 0.09 }, 0.68)
           .to(slit, { autoAlpha: 0.7, scaleY: 1, duration: 0.1, ease: "power2.out" }, 0.69)
-          .fromTo(scenes[3], { autoAlpha: 0, clipPath: "inset(0 0 100% 0)", y: 12 }, { autoAlpha: 1, clipPath: "inset(0 0 0% 0)", y: 0, duration: 0.08, ease: "power3.out" }, 0.72)
-          // Hold Personality, then let the sticky stage leave with the normal page flow.
-          .to(".sculpture-edge", { opacity: 0.55, duration: 0.45, ease: "sine.out" }, 0.8);
+          .fromTo(scenes[3], { autoAlpha: 0, clipPath: "inset(0 0 100% 0)", y: 12 }, { autoAlpha: 1, clipPath: "inset(0 0 0% 0)", y: 0, duration: 0.08, ease: "power3.out" }, 0.72);
 
         // « La coupe » : un trait bronze traverse l’écran, le noir se fend le long du trait
         // et l’ivoire du manifeste apparaît par l’ouverture qui s’agrandit.
@@ -120,7 +129,6 @@ export default function Home() {
         gsap.set(".cut-edge", { autoAlpha: 0, top: "50%" });
         timeline
           .to(".cut-line", { autoAlpha: 1, scaleX: 1, duration: 0.06, ease: "power3.inOut" }, 0.93)
-          .to(".sculpture", { opacity: 0.35, duration: 0.07, ease: "none" }, 0.93)
           .set(".cut-line", { autoAlpha: 0 }, 0.995)
           .set(".cut-edge", { autoAlpha: 1 }, 0.995)
           .fromTo(".hero-wipe", { clipPath: "inset(50% 0% 50% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.19, ease: "power2.inOut" }, 1)
@@ -197,7 +205,7 @@ export default function Home() {
         });
       }
 
-      ["#manifeste", "#le-temps", "#prestations", ".gallery-section", ".signature-section", "#femme-homme", "#expertise", "#rendez-vous"]
+      ["#manifeste", "#le-temps", "#prestations", ".gallery-section", ".signature-section", "#femme-homme", "#expertise", "#choregraphie", "#rendez-vous"]
         .forEach((selector) => {
           const section = document.querySelector<HTMLElement>(selector);
           if (!section) return;
@@ -239,28 +247,9 @@ export default function Home() {
 
       <section ref={heroRef} id="top" className="hero-scroll" aria-label="L’art du geste">
         <div className="hero-stage">
-          <div className="sculpture" aria-hidden="true">
-            <svg className="sculpture-svg" viewBox="0 0 600 900" fill="none">
-              <defs>
-                <linearGradient id="blade-metal" x1="255" y1="200" x2="350" y2="540" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#100E0C" /><stop offset=".35" stopColor="#29221B" /><stop offset=".48" stopColor="#58432F" /><stop offset=".52" stopColor="#211A14" /><stop offset="1" stopColor="#090908" />
-                </linearGradient>
-                <linearGradient id="blade-edge" x1="300" y1="70" x2="300" y2="800" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#EEE7DE" stopOpacity=".1" /><stop offset=".3" stopColor="#C8B9A5" /><stop offset=".65" stopColor="#A67B50" /><stop offset="1" stopColor="#A67B50" stopOpacity="0" />
-                </linearGradient>
-                <linearGradient id="blade-reflection" x1="0" y1="0" x2="0" y2="200" gradientUnits="userSpaceOnUse"><stop stopColor="#A67B50" stopOpacity="0" /><stop offset=".5" stopColor="#C8B9A5" stopOpacity=".35" /><stop offset="1" stopColor="#A67B50" stopOpacity="0" /></linearGradient>
-                <path id="blade-shape" d="M300 65 C286 157 255 356 269 540 L290 616 L271 765 Q269 801 287 805 Q308 811 310 774 L320 610 L330 540 C341 364 319 165 300 65Z" />
-                <clipPath id="blade-mask"><use href="#blade-shape" /></clipPath>
-              </defs>
-              {["a", "b"].map((blade) => <g key={blade} className={`sculpture-blade sculpture-blade--${blade}`}>
-                <use href="#blade-shape" fill="url(#blade-metal)" />
-                <use className="sculpture-edge" href="#blade-shape" stroke="url(#blade-edge)" strokeWidth="1.1" />
-                <g clipPath="url(#blade-mask)"><rect className="sculpture-reflection" x="240" y="-160" width="110" height="600" fill="url(#blade-reflection)" /></g>
-                <path d="M300 77 L300 546" stroke="#EEE7DE" strokeOpacity=".12" strokeWidth=".6" />
-              </g>)}
-              <circle cx="300" cy="610" r="12" fill="#17130F" stroke="#A67B50" strokeOpacity=".45" />
-              <circle cx="300" cy="610" r="4" fill="#57412D" />
-            </svg>
+          <div className="mirror-frame">
+            <img className="mirror-photo" src="/choreo-4-miroir.webp" alt="Une cliente à la coupe courte se regarde dans le miroir du salon, lumière dorée de fin de journée" width="1672" height="941" fetchPriority="high" />
+            <span className="mirror-sheen" aria-hidden="true" />
           </div>
           <div className="hero-vignette" />
           <div className="warm-halo" />
@@ -362,6 +351,10 @@ export default function Home() {
           <article><span className="step-number">02</span><div><h3>GESTE</h3><p>Une précision adaptée<br />à chaque matière.</p></div><span className="step-arrow">↘</span></article>
           <article><span className="step-number">03</span><div><h3>FINITION</h3><p>La signature se joue<br />dans les détails.</p></div><span className="step-arrow">↘</span></article>
         </div>
+      </section>
+
+      <section id="choregraphie" className="tone-dark" aria-label="Le salon en images">
+        <ScrollChoreography images={CHOREOGRAPHY_IMAGES} alts={CHOREOGRAPHY_ALTS} />
       </section>
 
       <section id="galerie" className="gallery-section tone-light">
