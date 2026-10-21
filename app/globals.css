@@ -153,6 +153,9 @@ button{font:inherit}
 
 /* Le miroir : cadre en arche à droite, qui s'ouvre au défilement jusqu'à occuper tout l'écran. */
 .mirror-frame{position:absolute;z-index:-2;top:15vh;bottom:15vh;right:11vw;width:30vw;overflow:hidden;border-radius:50vw 50vw 0 0;pointer-events:none;box-shadow:0 0 0 1px rgba(176,130,84,.6),0 0 0 14px var(--ink),0 0 0 15px rgba(176,130,84,.3),0 0 140px rgba(166,123,80,.24)}
+/* Safari (iPhone) : sans ce masque, la photo animée (zoom + flou) déborde de l'arche arrondie pendant le défilement.
+   Le masque est sur cette enveloppe et non sur .mirror-frame, pour garder le contour doré dessiné autour du cadre. */
+.mirror-clip{position:absolute;inset:0;overflow:hidden;border-radius:inherit;isolation:isolate;-webkit-mask-image:-webkit-radial-gradient(white,black);transform:translateZ(0)}
 .mirror-photo{display:block;width:100%;height:100%;object-fit:cover;object-position:15% 40%;will-change:transform,filter}
 .mirror-sheen{position:absolute;inset:0;width:60%;background:linear-gradient(105deg,transparent 30%,rgba(238,231,222,.2) 50%,transparent 70%);mix-blend-mode:screen;pointer-events:none}
 .hero-stage{background:radial-gradient(ellipse at 70% 48%,#21180f 0%,#100e0c 30%,#070706 68%)}

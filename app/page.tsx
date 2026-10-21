@@ -266,8 +266,10 @@ export default function Home() {
       <section ref={heroRef} id="top" className="hero-scroll" aria-label="L’art du geste">
         <div className="hero-stage">
           <div className="mirror-frame">
-            <img className="mirror-photo" src="/choreo-4-miroir.webp" alt="Une cliente à la coupe courte se regarde dans le miroir du salon, lumière dorée de fin de journée" width="1672" height="941" fetchPriority="high" />
-            <span className="mirror-sheen" aria-hidden="true" />
+            <div className="mirror-clip">
+              <img className="mirror-photo" src="/choreo-4-miroir.webp" alt="Une cliente à la coupe courte se regarde dans le miroir du salon, lumière dorée de fin de journée" width="1672" height="941" fetchPriority="high" />
+              <span className="mirror-sheen" aria-hidden="true" />
+            </div>
           </div>
           <div className="hero-vignette" />
           <div className="warm-halo" />
