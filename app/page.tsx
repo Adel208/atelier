@@ -257,7 +257,7 @@ export default function Home() {
         <nav className={menuOpen ? "nav nav--open" : "nav"} aria-label="Navigation principale">
           {navigation.map(([label, href]) => <a key={label} href={href} onClick={() => setMenuOpen(false)}>{label}</a>)}
         </nav>
-        <a className="header-book" href="#rendez-vous">PRENDRE RENDEZ-VOUS <span>↗</span></a>
+        <a className="header-book" href="#rendez-vous">PRENDRE RENDEZ-VOUS <span>↗︎</span></a>
         <button className="menu-toggle" aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)}>
           <span /><span />
         </button>
@@ -282,7 +282,7 @@ export default function Home() {
                 <p className="eyebrow">MAISON DE COIFFURE <span>·</span> PARIS</p>
                 <h1>L’ART<br /><span>DU GESTE</span></h1>
                 <p className="scene-copy">Coupe, matière et mouvement.<br />Une vision contemporaine de la coiffure<br className="desktop-only" /> pour elle et lui.</p>
-                <a className="text-link" href="#rendez-vous">PRENDRE RENDEZ-VOUS <span>↗</span></a>
+                <a className="text-link" href="#rendez-vous">PRENDRE RENDEZ-VOUS <span>↗︎</span></a>
               </div>
               <div className="scroll-cue"><span>SCROLL TO DISCOVER</span><i /></div>
             </article>
@@ -320,7 +320,7 @@ export default function Home() {
         <div className="manifesto-meta"><span>FEMME & HOMME — PARIS</span><span>01 / NOTRE VISION</span></div>
         <div className="manifesto-layout">
           <h2><span className="reveal-line">LA COIFFURE</span><span className="reveal-line indent">COMME</span><span className="reveal-line">SIGNATURE<span className="period">.</span></span></h2>
-          <div className="manifesto-note"><span className="note-rule" /><p>Nous travaillons la coupe, la matière et le mouvement pour construire un style qui vous appartient.</p><a href="#expertise" className="dark-link">NOTRE APPROCHE <span>↓</span></a></div>
+          <div className="manifesto-note"><span className="note-rule" /><p>Nous travaillons la coupe, la matière et le mouvement pour construire un style qui vous appartient.</p><a href="#expertise" className="dark-link">NOTRE APPROCHE <span>↓︎</span></a></div>
         </div>
         <span className="manifesto-index">A — 01</span>
       </section>
@@ -329,12 +329,12 @@ export default function Home() {
         <article className="duo-panel duo-women">
           <img src="/femme-editorial.webp" alt="Portrait éditorial d’une femme aux cheveux courts sculpturaux" />
           <div className="duo-shade" />
-          <div className="duo-content"><p className="eyebrow">01 — UNIVERS</p><h2>FEMME</h2><p className="universe-intention">Des lignes libres.<br />Une allure singulière.</p><ul><li>Coupe</li><li>Brushing</li><li>Coloration</li><li>Balayage</li><li>Soins</li></ul><a className="duo-link" href="#prestations">EXPLORER LES PRESTATIONS <span>↗</span></a></div>
+          <div className="duo-content"><p className="eyebrow">01 — UNIVERS</p><h2>FEMME</h2><p className="universe-intention">Des lignes libres.<br />Une allure singulière.</p><ul><li>Coupe</li><li>Brushing</li><li>Coloration</li><li>Balayage</li><li>Soins</li></ul><a className="duo-link" href="#prestations">EXPLORER LES PRESTATIONS <span>↗︎</span></a></div>
         </article>
         <article className="duo-panel duo-men">
           <img src="/homme-editorial.webp" alt="Portrait éditorial d’un homme à la coupe texturée" />
           <div className="duo-shade" />
-          <div className="duo-content"><p className="eyebrow">02 — UNIVERS</p><h2>HOMME</h2><p className="universe-intention">Une coupe juste.<br />Du caractère au quotidien.</p><ul><li>Coupe</li><li>Dégradé</li><li>Styling</li><li>Barbe</li><li>Soins</li></ul><a className="duo-link" href="#prestations">EXPLORER LES PRESTATIONS <span>↗</span></a></div>
+          <div className="duo-content"><p className="eyebrow">02 — UNIVERS</p><h2>HOMME</h2><p className="universe-intention">Une coupe juste.<br />Du caractère au quotidien.</p><ul><li>Coupe</li><li>Dégradé</li><li>Styling</li><li>Barbe</li><li>Soins</li></ul><a className="duo-link" href="#prestations">EXPLORER LES PRESTATIONS <span>↗︎</span></a></div>
         </article>
         <div className="duo-caption"><span>UNE MAISON, DEUX UNIVERS</span><span>PARIS · DEPUIS TOUJOURS</span></div>
       </section>
@@ -347,7 +347,7 @@ export default function Home() {
             ["02", "Couleur & lumière", "COLORATION · BALAYAGE", "Des nuances qui dialoguent avec votre base naturelle. Travailler la profondeur, adoucir les contrastes et placer la lumière là où elle révèle le mouvement."],
             ["03", "Contours & caractère", "DÉGRADÉ · BARBE", "Des contours précis, des transitions maîtrisées et des volumes équilibrés. Chaque détail participe à une silhouette qui vous ressemble."],
             ["04", "Soin & texture", "FEMME · HOMME", "Prendre le temps de comprendre la fibre et ses besoins. Un soin adapté et des conseils simples pour accompagner la matière au quotidien."],
-          ].map(([number, title, label, description]) => <details key={number}><summary><span>{number}</span><h3>{title}</h3><i aria-hidden="true">+</i></summary><div className="service-description"><span>{label}</span><p>{description}</p><a href="#rendez-vous" className="dark-link">PARLONS DE VOTRE ENVIE ↗</a></div></details>)}
+          ].map(([number, title, label, description]) => <details key={number}><summary><span>{number}</span><h3>{title}</h3><i aria-hidden="true">+</i></summary><div className="service-description"><span>{label}</span><p>{description}</p><a href="#rendez-vous" className="dark-link">PARLONS DE VOTRE ENVIE ↗︎</a></div></details>)}
         </div></div>
       </section>
 
@@ -359,7 +359,7 @@ export default function Home() {
           <li className="timeline__rail" aria-hidden="true"><span className="timeline__fill" /></li>
           {TIMELINE.map(([number, label, text]) => <li className="timeline__step" key={number}><i className="timeline__dot" aria-hidden="true" /><span className="timeline__number">{number}</span><h3>{label}</h3><p>{text}</p></li>)}
         </ol>
-        <div className="salon-after"><span>LE LUXE DE L’ATTENTION</span><p>Une envie précise ou une idée encore floue.<br />Tout commence par une conversation.</p><a href="#rendez-vous" className="dark-link">PRENDRE RENDEZ-VOUS ↗</a></div>
+        <div className="salon-after"><span>LE LUXE DE L’ATTENTION</span><p>Une envie précise ou une idée encore floue.<br />Tout commence par une conversation.</p><a href="#rendez-vous" className="dark-link">PRENDRE RENDEZ-VOUS ↗︎</a></div>
       </section>
 
       <section id="expertise" className="expertise-section tone-dark">
@@ -367,9 +367,9 @@ export default function Home() {
         <h2><span className="reveal-line">LE DÉTAIL</span><span className="reveal-line indent">FAIT LA</span><span className="reveal-line">DIFFÉRENCE<span className="period">.</span></span></h2>
         <div className="expertise-rule"><span className="expertise-rule__fill" /></div>
         <div className="expertise-steps">
-          <article><span className="step-number">01</span><div><h3>DIAGNOSTIC</h3><p>Observer avant<br />d’intervenir.</p></div><span className="step-arrow">↘</span></article>
-          <article><span className="step-number">02</span><div><h3>GESTE</h3><p>Une précision adaptée<br />à chaque matière.</p></div><span className="step-arrow">↘</span></article>
-          <article><span className="step-number">03</span><div><h3>FINITION</h3><p>La signature se joue<br />dans les détails.</p></div><span className="step-arrow">↘</span></article>
+          <article><span className="step-number">01</span><div><h3>DIAGNOSTIC</h3><p>Observer avant<br />d’intervenir.</p></div><span className="step-arrow">↘︎</span></article>
+          <article><span className="step-number">02</span><div><h3>GESTE</h3><p>Une précision adaptée<br />à chaque matière.</p></div><span className="step-arrow">↘︎</span></article>
+          <article><span className="step-number">03</span><div><h3>FINITION</h3><p>La signature se joue<br />dans les détails.</p></div><span className="step-arrow">↘︎</span></article>
         </div>
       </section>
 
@@ -397,13 +397,13 @@ export default function Home() {
 
       <section id="rendez-vous" className="booking-section tone-dark">
         <div className="section-topline"><span>04 / À VOUS</span><span>PRENDRE LE TEMPS</span></div>
-        <div className="booking-copy"><p className="eyebrow">VOTRE PROCHAIN STYLE COMMENCE ICI.</p><h2>PRENDRE<br /><span>RENDEZ-VOUS</span></h2><a className="booking-cta" href="https://virtuos.life/contact.html?offre=pro" target="_blank" rel="noopener">RÉSERVER UNE EXPÉRIENCE <span>↗</span><i /></a></div>
+        <div className="booking-copy"><p className="eyebrow">VOTRE PROCHAIN STYLE COMMENCE ICI.</p><h2>PRENDRE<br /><span>RENDEZ-VOUS</span></h2><a className="booking-cta" href="https://virtuos.life/contact.html?offre=pro" target="_blank" rel="noopener">RÉSERVER UNE EXPÉRIENCE <span>↗︎</span><i /></a></div>
         <span className="booking-aside">01 — 02<br />FEMME & HOMME</span>
       </section>
 
       <footer className="site-footer tone-dark">
-        <div className="footer-top"><a className="wordmark" href="#top">atelier<span>•</span></a><span className="footer-mantra">LE GESTE, JUSTE.</span><a className="footer-up" href="#top">REVENIR EN HAUT ↑</a></div>
-        <div className="footer-grid"><div><span className="footer-label">NOUS TROUVER</span><p>Maquette de démonstration<br />Adresse fictive, Paris</p><span>AUCUN SALON RÉEL</span></div><div><span className="footer-label">NOUS JOINDRE</span><p>Coordonnées fictives.<br />Site réalisé par Virtuos Studio.</p><a href="https://virtuos.life/" target="_blank" rel="noopener">VIRTUOS.LIFE ↗</a></div><div><span className="footer-label">HORAIRES</span><p>Mardi — samedi<br />10:00 — 19:00</p><span>SUR RENDEZ-VOUS</span></div><div><span className="footer-label">EXPLORER</span>{navigation.slice(0, 5).map(([label, href]) => <a className="footer-nav-link" key={label} href={href}>{label}</a>)}</div></div>
+        <div className="footer-top"><a className="wordmark" href="#top">atelier<span>•</span></a><span className="footer-mantra">LE GESTE, JUSTE.</span><a className="footer-up" href="#top">REVENIR EN HAUT ↑︎</a></div>
+        <div className="footer-grid"><div><span className="footer-label">NOUS TROUVER</span><p>Maquette de démonstration<br />Adresse fictive, Paris</p><span>AUCUN SALON RÉEL</span></div><div><span className="footer-label">NOUS JOINDRE</span><p>Coordonnées fictives.<br />Site réalisé par Virtuos Studio.</p><a href="https://virtuos.life/" target="_blank" rel="noopener">VIRTUOS.LIFE ↗︎</a></div><div><span className="footer-label">HORAIRES</span><p>Mardi — samedi<br />10:00 — 19:00</p><span>SUR RENDEZ-VOUS</span></div><div><span className="footer-label">EXPLORER</span>{navigation.slice(0, 5).map(([label, href]) => <a className="footer-nav-link" key={label} href={href}>{label}</a>)}</div></div>
         <div id="mentions" className="footer-bottom"><span>© ATELIER PARIS 2026</span><a href="#mentions">MENTIONS LÉGALES</a><span>FÉMININ · MASCULIN · SINGULIER</span></div>
         <span className="footer-ghost" aria-hidden="true">ATELIER</span>
       </footer>
